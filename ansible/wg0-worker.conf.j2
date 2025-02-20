@@ -1,0 +1,15 @@
+[Interface]
+PrivateKey = {{ wg_private_key }}
+Address = {{ wireguard_ip }}/24
+ListenPort = 51820
+{% for host in hostvars %}
+{% if hostvars[host]['is_primary']|bool %}
+MTU = {{ wireguard_mtu | default(1380) }}
+
+[Peer]
+PublicKey = {{ hostvars[host]['wg_public_key'] }}
+AllowedIPs = 192.168.50.0/24, 10.0.50.0/24
+Endpoint = {{ hostvars[host]['external_ip'] }}:51820
+PersistentKeepalive = 25
+{% endif %}
+{% endfor %}

@@ -53,6 +53,9 @@
         path: /etc/wireguard/private.key
       register: wg_private_exists
 
+    - name: Debug Wireguard keys
+      debug:
+        msg: "Host {{ inventory_hostname }} has wg_public_key = {{ wg_public_key | default('undefined') }}"
     - name: Generate Wireguard keys
       shell: |
         wg genkey > /etc/wireguard/private.key
@@ -75,13 +78,17 @@
       set_fact:
         wg_public_key: "{{ public_keys['content'] | b64decode | trim }}"
         wg_private_key: "{{ private_keys['content'] | b64decode | trim }}"
-
+    - name: Debug Wireguard keys
+      debug:
+        msg: "Host {{ inventory_hostname }} has wg_public_key = {{ wg_public_key | default('undefined') }}"
     - name: Debug hostvars for wg keys
       debug:
         msg: "Host {{ item }}: has wg_public_key = {{ hostvars[item]['wg_public_key'] is defined }}"
       loop: "{{ groups['all'] }}"
       when: is_primary | bool
-
+    - name: Debug Wireguard keys
+      debug:
+        msg: "Host {{ inventory_hostname }} has wg_public_key = {{ wg_public_key | default('undefined') }}"
     - name: Create Wireguard config for primary
       when: is_primary | bool
       template:
