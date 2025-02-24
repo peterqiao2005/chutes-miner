@@ -111,6 +111,46 @@
         - proxy.no-proxy
       changed_when: true
       ignore_errors: true
+      
+    - name: Check if IPv6 disable file exists for all interfaces
+      stat:
+        path: /proc/sys/net/ipv6/conf/all/disable_ipv6
+      register: ipv6_all
+
+    - name: Disable IPv6 on all interfaces if available
+      sysctl:
+        name: net.ipv6.conf.all.disable_ipv6
+        value: "1"
+        sysctl_set: yes
+        state: present
+        reload: yes
+      when: ipv6_all.stat.exists
+
+    - name: Check if IPv6 disable file exists for default interfaces
+      stat:
+        path: /proc/sys/net/ipv6/conf/default/disable_ipv6
+      register: ipv6_default
+
+    - name: Disable IPv6 on default interfaces if available
+      sysctl:
+        name: net.ipv6.conf.default.disable_ipv6
+        value: "1"
+        sysctl_set: yes
+        state: present
+        reload: yes
+      when: ipv6_default.stat.exists
+      
+    - name: Disable IPv6 listen directive in nginx default site config if exists
+      become: yes
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: '^\s*listen\s+\[::\]:80'
+        state: absent
+      ignore_errors: yes
+
+    - name: Reconfigure pending packages (including nginx)
+      become: yes
+      command: dpkg --configure -a
 
     - name: Install basic system prerequisites
       apt:
@@ -335,22 +375,48 @@
             timedatectl set-ntp true
             systemctl restart systemd-timesyncd
 
-    - name: Disable IPv6
-      block:
-        - name: Set sysctl parameters for IPv6
-          sysctl:
-            name: "{{ item.key }}"
-            value: "{{ item.value }}"
-            state: present
-            sysctl_file: /etc/sysctl.d/99-disable-ipv6.conf
-            reload: yes
-          with_items:
-            - { key: "net.ipv6.conf.all.disable_ipv6", value: "1" }
-            - { key: "net.ipv6.conf.default.disable_ipv6", value: "1" }
-            - { key: "net.ipv6.conf.lo.disable_ipv6", value: "1" }
-          register: ipv6_disabled
+    - name: Check if /proc/sys/net/ipv6/conf/all/disable_ipv6 exists
+      stat:
+        path: /proc/sys/net/ipv6/conf/all/disable_ipv6
+      register: ipv6_all
+
+    - name: Set sysctl parameter net.ipv6.conf.all.disable_ipv6
+      sysctl:
+        name: net.ipv6.conf.all.disable_ipv6
+        value: "1"
+        sysctl_file: /etc/sysctl.d/99-disable-ipv6.conf
+        reload: yes
+      when: ipv6_all.stat.exists
       become: yes
-      when: not ipv6_enabled | bool
+
+    - name: Check if /proc/sys/net/ipv6/conf/default/disable_ipv6 exists
+      stat:
+        path: /proc/sys/net/ipv6/conf/default/disable_ipv6
+      register: ipv6_default
+
+    - name: Set sysctl parameter net.ipv6.conf.default.disable_ipv6
+      sysctl:
+        name: net.ipv6.conf.default.disable_ipv6
+        value: "1"
+        sysctl_file: /etc/sysctl.d/99-disable-ipv6.conf
+        reload: yes
+      when: ipv6_default.stat.exists
+      become: yes
+
+    - name: Check if /proc/sys/net/ipv6/conf/lo/disable_ipv6 exists
+      stat:
+        path: /proc/sys/net/ipv6/conf/lo/disable_ipv6
+      register: ipv6_lo
+
+    - name: Set sysctl parameter net.ipv6.conf.lo.disable_ipv6
+      sysctl:
+        name: net.ipv6.conf.lo.disable_ipv6
+        value: "1"
+        sysctl_file: /etc/sysctl.d/99-disable-ipv6.conf
+        reload: yes
+      when: ipv6_lo.stat.exists
+      become: yes
+
 
     - name: Install MicroK8s
       community.general.snap:

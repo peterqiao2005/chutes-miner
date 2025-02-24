@@ -30,21 +30,21 @@ all:
     ubuntu_major: "22"
     ubuntu_minor: "04"
     # CUDA version - leave as-is unless using h200s, in which case either use 12-5 or skip_cuda: true (if provider already pre-installed drivers)
-    cuda_version: "12-6"
+    cuda_version: "12-4"
     # NVIDA GPU drivers - leave as-is unless using h200s, in which case it would be 555
-    nvidia_version: "560"
+    nvidia_version: "550"
     # Flag to skip the cuda install entirely, if the provider already has cuda 12.x+ installed (note some chutes will not work unless 12.6+)
-    skip_cuda: false
+    skip_cuda: true
     # Flag to enable/disable IPv6. Some hosts may require IPv6 to be on.
-    ipv6_enabled: true
+    ipv6_enabled: false
     # Default MTU
     wireguard_mtu: 1380
 
   hosts:
     # This would be the main node, which runs postgres, redis, gepetto, etc.
     chutes-miner-cpu-0:
-      ansible_host: 106.75.227.33
-      external_ip: 106.75.227.33
+      ansible_host: 38.96.148.104
+      external_ip: 38.96.148.104
       wireguard_ip: 192.168.50.1
       gpu_enabled: false
       is_primary: true
