@@ -2,6 +2,7 @@ all:
   vars:
     # This is your SSH private key to use to login
     ansible_ssh_private_key_file: ~/.ssh/peter_sn51_private
+    wg_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyUP8Bp71UDcSpQkWyUp6N9TS9rYHA8/oT4XF9r5tuVt8NHCQUYoaInw166eWiwIBtDKtlFs4uANnDkmzDlkqisZ5u4QAS8HkbRlTOGI9l6DDCVdFiKKLx4i5P7B8tITgdlsyDobjv4tbjzLWIZlp+xN1U8rCbtw1jEJQYQ4L5GYQRttCDpyScopyCfm2BemXBDby83NP/6oD2St8pxtVv85Zsb+q88hDweEcg/H/dFCXlxfgrRuM6wotmYUKsvLrycy2fITyS2OejKr8zZng8GT5mgXC4I5+4dx4RMf0wZp5ZIcbZYkr841v4jN1yhZT1L9pkOm0CSJfMpsOjDHQhNYHovF96R4szBL+HhPYwYVCyLFHmj5+fbjRmiWKPRzrsDkW8TJwVJsAeipHoJ5GnewoMoGa7vm0z0uwk5qbjzEBB4Kolgg8zu5pncaHOgAEN8y4bWNCAzM27wMKVDlzIvEGduVBgb1FvX3ntycy59JF0H14qH4MKRyL1Y/LwKoM= peter_sn15"
     # This is your SSH public key, e.g. cat ~/.ssh/id_rsa.pub
     ssh_keys:      
       - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC2iXvwkfyVXVtExxD/qOAb25Q20vmcvAEYBM/TBvjgpBB2lOYv22oyMIDWSa3qZWYWtDhCtWW/i7U7myp7tLxQ1tMh1xRhagBtdGMypILukYqIzgO+g3f/tyTfRjaIl8acL/iHvruZ62BaPzBsUyMHB7LUbUTB+q0WVF0xU3Qclkymmp3NcWvA/wTyTnFoW3wEP9iCnU+er4lEhYuMnrAHm6vi/LfmrP2A72ltk7QAW3/cMja8DRMOvt1x0NvrSTL4rD9AxdVDh2vOS0DMaKqWe/t7SVtbT4Whgsnd4XV+HarYRDq945kq2NmjgAyLEFKUkt4X6JJClE9W7WKiiYzJEDOQDCJRtTwVCreZOLANHITnZT77Z2ExT1DsMLNAAMxWjoSQNZx2847vG15eiHyNpUinmtxuYhtvV6t5SduWJU9zuUV7htsRkZUGgQW7eqLT8JAoErQtPR3r9zxstgi20YC9Yx3i8UwRykIrzsAoNgdWWrbJe5zbn1YqetOPlGL0er7PwWyGH8qpb4rNaJRf5wQlMz/ZAL8BrZZFRLyBj1F2lctx22cXgv7aYRDAW4fXGakHoJ5FBeqAB6uJyFD2kcGXfbWHcvrlaq0HrG/ox56hYHgp97omR3yZRRwyre2HmjjudznlbpmhCqvMfyVJ9MfLupzEqtDtNgp+BJ7bWw== t@t.com"
@@ -30,9 +31,9 @@ all:
     ubuntu_major: "22"
     ubuntu_minor: "04"
     # CUDA version - leave as-is unless using h200s, in which case either use 12-5 or skip_cuda: true (if provider already pre-installed drivers)
-    cuda_version: "12-4"
+    cuda_version: "12-6"
     # NVIDA GPU drivers - leave as-is unless using h200s, in which case it would be 555
-    nvidia_version: "550"
+    nvidia_version: "560"
     # Flag to skip the cuda install entirely, if the provider already has cuda 12.x+ installed (note some chutes will not work unless 12.6+)
     skip_cuda: true
     # Flag to enable/disable IPv6. Some hosts may require IPv6 to be on.
@@ -50,18 +51,18 @@ all:
       is_primary: true
 
     # These are the GPU nodes, which actually run the chutes.
-    chutes-canada-gpu-4:
-      ansible_host: 64.21.190.84
-      external_ip: 64.21.190.84
-      wireguard_ip: 192.168.50.4
-      ansible_port: 22
-    chutes-canada-gpu-5:
-      ansible_host: 64.21.190.85
-      external_ip: 64.21.190.85
-      wireguard_ip: 192.168.50.5
-      ansible_port: 22
-    chutes-canada-gpu-6:
-      ansible_host: 64.21.190.86
-      external_ip: 64.21.190.86
-      wireguard_ip: 192.168.50.6
-      ansible_port: 22
+    chutes-miner-gpu-9:
+      ansible_host: 74.82.31.89
+      external_ip: 74.82.31.89
+      wireguard_ip: 192.168.50.89
+    #  ansible_port: 22
+    chutes-miner-gpu-10:
+      ansible_host: 209.51.170.110
+      external_ip: 209.51.170.110
+      wireguard_ip: 192.168.50.110
+    # ansible_port: 22
+    chutes-miner-gpu-16:
+      ansible_host: 65.19.181.116
+      external_ip: 65.19.181.116
+      wireguard_ip: 192.168.50.116
+    #  ansible_port: 22
